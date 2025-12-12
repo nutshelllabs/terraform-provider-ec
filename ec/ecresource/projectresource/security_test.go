@@ -68,6 +68,7 @@ func TestSecurityModelReader_ReadFrom(t *testing.T) {
 						resource_security_project.SecurityProjectResourceSchema(context.Background()).Attributes["product_types"].GetType().(attr.TypeWithElementType).ElementType(),
 						[]attr.Value{},
 					),
+					TrafficFilters: types.SetNull(types.StringType),
 				}
 
 				return testData{
@@ -904,9 +905,10 @@ func TestSecurityApi_Read(t *testing.T) {
 							"suspended_reason": basetypes.NewStringNull(),
 						},
 					),
-					Name:     types.StringValue(readModel.Name),
-					RegionId: types.StringValue(readModel.RegionId),
-					Type:     types.StringValue(string(readModel.Type)),
+					Name:           types.StringValue(readModel.Name),
+					RegionId:       types.StringValue(readModel.RegionId),
+					Type:           types.StringValue(string(readModel.Type)),
+					TrafficFilters: types.SetNull(types.StringType),
 				}
 
 				mockApiClient := mocks.NewMockClientWithResponsesInterface(ctrl)
@@ -977,9 +979,10 @@ func TestSecurityApi_Read(t *testing.T) {
 							"suspended_reason": basetypes.NewStringValue(*readModel.Metadata.SuspendedReason),
 						},
 					),
-					Name:     types.StringValue(readModel.Name),
-					RegionId: types.StringValue(readModel.RegionId),
-					Type:     types.StringValue(string(readModel.Type)),
+					Name:           types.StringValue(readModel.Name),
+					RegionId:       types.StringValue(readModel.RegionId),
+					Type:           types.StringValue(string(readModel.Type)),
+					TrafficFilters: types.SetNull(types.StringType),
 				}
 
 				mockApiClient := mocks.NewMockClientWithResponsesInterface(ctrl)

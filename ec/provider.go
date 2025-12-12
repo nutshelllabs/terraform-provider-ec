@@ -48,6 +48,7 @@ import (
 	"github.com/elastic/terraform-provider-ec/ec/ecresource/extensionresource"
 	"github.com/elastic/terraform-provider-ec/ec/ecresource/projectresource"
 	"github.com/elastic/terraform-provider-ec/ec/ecresource/snapshotrepositoryresource"
+	"github.com/elastic/terraform-provider-ec/ec/ecresource/serverlesstrafficfilterresource"
 	"github.com/elastic/terraform-provider-ec/ec/ecresource/trafficfilterassocresource"
 	"github.com/elastic/terraform-provider-ec/ec/ecresource/trafficfilterresource"
 	"github.com/elastic/terraform-provider-ec/ec/internal/util"
@@ -123,6 +124,7 @@ func (p *Provider) Resources(ctx context.Context) []func() resource.Resource {
 		func() resource.Resource { return projectresource.NewObservabilityProjectResource() },
 		func() resource.Resource { return projectresource.NewSecurityProjectResource() },
 		func() resource.Resource { return &organizationresource.Resource{} },
+		serverlesstrafficfilterresource.NewResource,
 	}
 }
 

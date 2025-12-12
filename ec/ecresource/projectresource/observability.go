@@ -112,6 +112,12 @@ func (obs observabilityApi) Create(ctx context.Context, model resource_observabi
 		createBody.ProductTier = &productTier
 	}
 
+	trafficFilters, diags := trafficFiltersFromModel(ctx, model.TrafficFilters)
+	if diags.HasError() {
+		return model, diags
+	}
+	createBody.TrafficFilters = trafficFilters
+
 	resp, err := obs.client.CreateObservabilityProjectWithResponse(ctx, createBody)
 	if err != nil {
 		return model, diag.Diagnostics{
@@ -157,6 +163,12 @@ func (obs observabilityApi) Patch(ctx context.Context, model resource_observabil
 		productTier := serverless.ObservabilityProjectProductTier(model.ProductTier.ValueString())
 		updateBody.ProductTier = &productTier
 	}
+
+	trafficFilters, diags := trafficFiltersFromModel(ctx, model.TrafficFilters)
+	if diags.HasError() {
+		return diags
+	}
+	updateBody.TrafficFilters = (*serverless.OptionalTrafficFilters)(trafficFilters)
 
 	resp, err := obs.client.PatchObservabilityProjectWithResponse(ctx, model.Id.ValueString(), nil, updateBody)
 	if err != nil {
@@ -276,6 +288,12 @@ func (obs observabilityApi) Read(ctx context.Context, id string, model resource_
 	model.Name = basetypes.NewStringValue(resp.JSON200.Name)
 	model.RegionId = basetypes.NewStringValue(resp.JSON200.RegionId)
 	model.Type = basetypes.NewStringValue(string(resp.JSON200.Type))
+
+	trafficFilters, diags := trafficFiltersToModel(ctx, resp.JSON200.TrafficFilters)
+	if diags.HasError() {
+		return false, model, diags
+	}
+	model.TrafficFilters = trafficFilters
 
 	return true, model, nil
 }

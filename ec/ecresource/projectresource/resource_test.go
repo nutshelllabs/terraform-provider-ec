@@ -156,13 +156,16 @@ func TestModifyPlan(t *testing.T) {
 		}
 
 		planModel := &resource_elasticsearch_project.ElasticsearchProjectModel{
-			Id: types.StringValue("plan"),
+			Id:             types.StringValue("plan"),
+			TrafficFilters: types.SetNull(types.StringType),
 		}
 		stateModel := &resource_elasticsearch_project.ElasticsearchProjectModel{
-			Id: types.StringValue("state"),
+			Id:             types.StringValue("state"),
+			TrafficFilters: types.SetNull(types.StringType),
 		}
 		cfgModel := &resource_elasticsearch_project.ElasticsearchProjectModel{
-			Id: types.StringValue("config"),
+			Id:             types.StringValue("config"),
+			TrafficFilters: types.SetNull(types.StringType),
 		}
 
 		mockHandler := NewMockmodelHandler[resource_elasticsearch_project.ElasticsearchProjectModel](ctrl)

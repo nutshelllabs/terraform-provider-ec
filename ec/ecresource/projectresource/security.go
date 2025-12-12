@@ -129,6 +129,12 @@ func (sec securityApi) Create(ctx context.Context, model resource_security_proje
 		createBody.ProductTypes = &createProductTypes
 	}
 
+	trafficFilters, diags := trafficFiltersFromModel(ctx, model.TrafficFilters)
+	if diags.HasError() {
+		return model, diags
+	}
+	createBody.TrafficFilters = trafficFilters
+
 	resp, err := sec.client.CreateSecurityProjectWithResponse(ctx, createBody)
 	if err != nil {
 		return model, diag.Diagnostics{
@@ -169,6 +175,12 @@ func (sec securityApi) Patch(ctx context.Context, model resource_security_projec
 	if model.Alias.ValueString() != "" {
 		updateBody.Alias = model.Alias.ValueStringPointer()
 	}
+
+	trafficFilters, diags := trafficFiltersFromModel(ctx, model.TrafficFilters)
+	if diags.HasError() {
+		return diags
+	}
+	updateBody.TrafficFilters = (*serverless.OptionalTrafficFilters)(trafficFilters)
 
 	resp, err := sec.client.PatchSecurityProjectWithResponse(ctx, model.Id.ValueString(), nil, updateBody)
 	if err != nil {
@@ -287,6 +299,12 @@ func (sec securityApi) Read(ctx context.Context, id string, model resource_secur
 	model.Name = basetypes.NewStringValue(resp.JSON200.Name)
 	model.RegionId = basetypes.NewStringValue(resp.JSON200.RegionId)
 	model.Type = basetypes.NewStringValue(string(resp.JSON200.Type))
+
+	trafficFilters, diags := trafficFiltersToModel(ctx, resp.JSON200.TrafficFilters)
+	if diags.HasError() {
+		return false, model, diags
+	}
+	model.TrafficFilters = trafficFilters
 
 	return true, model, nil
 }
