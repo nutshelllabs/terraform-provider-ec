@@ -193,7 +193,7 @@ func (r *Resource) Delete(ctx context.Context, req resource.DeleteRequest, resp 
 	}
 
 	statusCode := deleteResp.StatusCode()
-	if statusCode != http.StatusOK && statusCode != http.StatusNotFound {
+	if statusCode != http.StatusOK && statusCode != http.StatusNoContent && statusCode != http.StatusNotFound {
 		resp.Diagnostics.AddError(
 			"Failed to delete traffic filter",
 			fmt.Sprintf("The API request failed with: %d %s\n%s",
@@ -216,8 +216,8 @@ func modelFromResponse(info *serverless.TrafficFilterInfo) TrafficFilterModel {
 	model.Region = stringValue(info.Region)
 	model.Type = stringValue(string(info.Type))
 	model.IncludeByDefault = boolValue(info.IncludeByDefault)
-	
-	if info.Description != nil {
+
+	if info.Description != nil && *info.Description != "" {
 		model.Description = stringValue(*info.Description)
 	}
 
@@ -227,7 +227,7 @@ func modelFromResponse(info *serverless.TrafficFilterInfo) TrafficFilterModel {
 			ruleModel := TrafficFilterRuleModel{
 				Source: stringValue(rule.Source),
 			}
-			if rule.Description != nil {
+			if rule.Description != nil && *rule.Description != "" {
 				ruleModel.Description = stringValue(*rule.Description)
 			}
 			model.Rules = append(model.Rules, ruleModel)
