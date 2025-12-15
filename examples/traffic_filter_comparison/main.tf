@@ -77,7 +77,7 @@ resource "ec_deployment" "example_inline" {
 # NOTE: Cannot mix with inline traffic_filter on the same deployment!
 
 data "ec_deployment" "existing" {
-  id = "320b7b540dfc967a7a649c18e2fce4ed"  # Pre-existing deployment ID
+  id = "320b7b540dfc967a7a649c18e2fce4ed" # Pre-existing deployment ID
 }
 
 resource "ec_deployment_traffic_filter" "separate_filter" {
@@ -100,9 +100,10 @@ resource "ec_deployment_traffic_filter_association" "example" {
 # -----------------------------------------------------------------------------
 # OPTION B: SERVERLESS PROJECTS (ec_elasticsearch_project, etc.)
 # -----------------------------------------------------------------------------
-# Serverless projects use inline traffic_filters attribute ONLY.
-# There is no separate association resource for serverless.
-# The traffic_filters attribute is a set of filter IDs.
+# There are TWO ways to associate traffic filters with serverless projects:
+#
+# B1. Inline on the project resource (recommended for full Terraform control)
+# B2. Separate association resource (for projects managed outside Terraform)
 # -----------------------------------------------------------------------------
 
 # --- AWS Region Example ---
@@ -194,25 +195,37 @@ resource "ec_security_project" "my_sec_project" {
   ]
 }
 
+# --- B2: Separate Association Resource ---
+# Use this when you want to manage traffic filter associations as separate resources.
+# This allows you to define filters and attach them from the project side of your config.
+
+resource "ec_serverless_traffic_filter" "separate_filter_serverless" {
+  name   = "Separate filter for association"
+  region = "aws-us-east-1"
+  type   = "ip"
+
+  rule {
+    source = "203.0.113.0/24"
+  }
+}
+
+resource "ec_serverless_traffic_filter_association" "example" {
+  traffic_filter_id = ec_serverless_traffic_filter.separate_filter_serverless.id
+  project_id        = ec_elasticsearch_project.my_project_aws.id
+  project_type      = "elasticsearch" # elasticsearch, observability, or security
+}
+
 
 # =============================================================================
 # COMPARISON SUMMARY
 # =============================================================================
 #
-# | Aspect                    | Non-Serverless (ec_deployment)       | Serverless (ec_*_project)            |
-# |---------------------------|--------------------------------------|--------------------------------------|
-# | Traffic Filter Resource   | ec_deployment_traffic_filter         | ec_serverless_traffic_filter         |
-# | Inline Association        | traffic_filter = [...]               | traffic_filters = [...]              |
-# | Separate Association      | ec_deployment_traffic_filter_assoc.  | NOT AVAILABLE                        |
-# | Association Type          | List of filter IDs                   | Set of filter IDs                    |
-# | Region Format             | "us-east-1"                          | "aws-us-east-1", "gcp-us-central1"   |
-# | Supported Clouds          | AWS, GCP, Azure                      | AWS, GCP, Azure                      |
-#
-# KEY DIFFERENCES:
-# 1. Serverless uses ec_serverless_traffic_filter (different resource type)
-# 2. Serverless has NO separate association resource
-# 3. Serverless uses "traffic_filters" (plural), deployments use "traffic_filter" (singular)
-# 4. Serverless only supports inline association on the project resource
-# 5. Region format differs (serverless includes cloud provider prefix)
+# | Aspect                    | Non-Serverless (ec_deployment)       | Serverless (ec_*_project)              |
+# |---------------------------|--------------------------------------|----------------------------------------|
+# | Traffic Filter Resource   | ec_deployment_traffic_filter         | ec_serverless_traffic_filter           |
+# | Inline Association        | traffic_filter = [...]               | traffic_filters = [...]                |
+# | Separate Association      | ec_deployment_traffic_filter_assoc.  | ec_serverless_traffic_filter_assoc.    |
+# | Association Type          | List of filter IDs                   | Set of filter IDs                      |
+# | Region Format             | "us-east-1"                          | "aws-us-east-1", "gcp-us-central1"     |
 #
 # =============================================================================
