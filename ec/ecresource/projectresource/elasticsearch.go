@@ -137,6 +137,12 @@ func (es elasticsearchApi) Create(ctx context.Context, model resource_elasticsea
 		}
 	}
 
+	trafficFilters, diags := trafficFiltersFromModel(ctx, model.TrafficFilters)
+	if diags.HasError() {
+		return model, diags
+	}
+	createBody.TrafficFilters = trafficFilters
+
 	resp, err := es.client.CreateElasticsearchProjectWithResponse(ctx, createBody)
 	if err != nil {
 		return model, diag.Diagnostics{
@@ -191,6 +197,12 @@ func (es elasticsearchApi) Patch(ctx context.Context, model resource_elasticsear
 			updateBody.SearchLake.SearchPower = &searchPower
 		}
 	}
+
+	trafficFilters, diags := trafficFiltersFromModel(ctx, model.TrafficFilters)
+	if diags.HasError() {
+		return diags
+	}
+	updateBody.TrafficFilters = (*serverless.OptionalTrafficFilters)(trafficFilters)
 
 	resp, err := es.client.PatchElasticsearchProjectWithResponse(ctx, model.Id.ValueString(), nil, updateBody)
 	if err != nil {
@@ -332,6 +344,12 @@ func (es elasticsearchApi) Read(ctx context.Context, id string, model resource_e
 		return false, model, nil
 	}
 	model.SearchLake = searchLake
+
+	trafficFilters, diags := trafficFiltersToModel(ctx, resp.JSON200.TrafficFilters)
+	if diags.HasError() {
+		return false, model, diags
+	}
+	model.TrafficFilters = trafficFilters
 
 	return true, model, nil
 }

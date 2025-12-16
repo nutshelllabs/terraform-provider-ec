@@ -63,7 +63,8 @@ func TestElasticsearchModelReader_ReadFrom(t *testing.T) {
 			name: "should read a basic model back",
 			testData: func() testData {
 				model := resource_elasticsearch_project.ElasticsearchProjectModel{
-					Id: basetypes.NewStringValue("id"),
+					Id:             basetypes.NewStringValue("id"),
+					TrafficFilters: types.SetNull(types.StringType),
 				}
 
 				return testData{
@@ -934,10 +935,11 @@ func TestElasticsearchApi_Read(t *testing.T) {
 							"search_power": basetypes.NewInt64Null(),
 						},
 					),
-					Name:         types.StringValue(readModel.Name),
-					OptimizedFor: types.StringValue(string(readModel.OptimizedFor)),
-					RegionId:     types.StringValue(readModel.RegionId),
-					Type:         types.StringValue(string(readModel.Type)),
+					Name:           types.StringValue(readModel.Name),
+					OptimizedFor:   types.StringValue(string(readModel.OptimizedFor)),
+					RegionId:       types.StringValue(readModel.RegionId),
+					Type:           types.StringValue(string(readModel.Type)),
+					TrafficFilters: types.SetNull(types.StringType),
 				}
 
 				mockApiClient := mocks.NewMockClientWithResponsesInterface(ctrl)
@@ -1018,10 +1020,11 @@ func TestElasticsearchApi_Read(t *testing.T) {
 							"search_power": basetypes.NewInt64Value(int64(*readModel.SearchLake.SearchPower)),
 						},
 					),
-					Name:         types.StringValue(readModel.Name),
-					OptimizedFor: types.StringValue(string(readModel.OptimizedFor)),
-					RegionId:     types.StringValue(readModel.RegionId),
-					Type:         types.StringValue(string(readModel.Type)),
+					Name:           types.StringValue(readModel.Name),
+					OptimizedFor:   types.StringValue(string(readModel.OptimizedFor)),
+					RegionId:       types.StringValue(readModel.RegionId),
+					Type:           types.StringValue(string(readModel.Type)),
+					TrafficFilters: types.SetNull(types.StringType),
 				}
 
 				mockApiClient := mocks.NewMockClientWithResponsesInterface(ctrl)

@@ -109,6 +109,16 @@
             }
           },
           {
+            "name": "traffic_filters",
+            "set": {
+              "computed_optional_required": "optional",
+              "description": "Traffic filters to associate with this project. Traffic filters are IDs of traffic filter resources.",
+              "element_type": {
+                "string": {}
+              }
+            }
+          },
+          {
             "name": "search_lake",
             "single_nested": {
               "computed_optional_required": "computed_optional",
@@ -400,6 +410,16 @@
             "string": {
               "computed_optional_required": "required",
               "description": "Unique human-readable identifier for a region in Elastic Cloud."
+            }
+          },
+          {
+            "name": "traffic_filters",
+            "set": {
+              "computed_optional_required": "optional",
+              "description": "Traffic filters to associate with this project. Traffic filters are IDs of traffic filter resources.",
+              "element_type": {
+                "string": {}
+              }
             }
           },
           {
@@ -718,6 +738,16 @@
             "string": {
               "computed_optional_required": "required",
               "description": "Unique human-readable identifier for a region in Elastic Cloud."
+            }
+          },
+          {
+            "name": "traffic_filters",
+            "set": {
+              "computed_optional_required": "optional",
+              "description": "Traffic filters to associate with this project. Traffic filters are IDs of traffic filter resources.",
+              "element_type": {
+                "string": {}
+              }
             }
           },
           {

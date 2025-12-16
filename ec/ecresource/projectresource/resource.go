@@ -25,6 +25,7 @@ import (
 	"github.com/elastic/terraform-provider-ec/ec/internal/gen/serverless"
 	"github.com/elastic/terraform-provider-ec/ec/internal/gen/serverless/resource_elasticsearch_project"
 	"github.com/hashicorp/terraform-plugin-framework/diag"
+	"github.com/hashicorp/terraform-plugin-framework/path"
 	"github.com/hashicorp/terraform-plugin-framework/resource"
 	"github.com/hashicorp/terraform-plugin-framework/types/basetypes"
 )
@@ -33,6 +34,7 @@ import (
 var _ resource.Resource = &Resource[resource_elasticsearch_project.ElasticsearchProjectModel]{}
 var _ resource.ResourceWithConfigure = &Resource[resource_elasticsearch_project.ElasticsearchProjectModel]{}
 var _ resource.ResourceWithModifyPlan = &Resource[resource_elasticsearch_project.ElasticsearchProjectModel]{}
+var _ resource.ResourceWithImportState = &Resource[resource_elasticsearch_project.ElasticsearchProjectModel]{}
 
 type Resource[T any] struct {
 	modelHandler modelHandler[T]
@@ -94,6 +96,10 @@ func (r *Resource[T]) Metadata(ctx context.Context, request resource.MetadataReq
 
 func (r *Resource[T]) Schema(ctx context.Context, req resource.SchemaRequest, resp *resource.SchemaResponse) {
 	r.modelHandler.Schema(ctx, req, resp)
+}
+
+func (r *Resource[T]) ImportState(ctx context.Context, req resource.ImportStateRequest, resp *resource.ImportStateResponse) {
+	resource.ImportStatePassthroughID(ctx, path.Root("id"), req, resp)
 }
 
 func (r Resource[T]) ModifyPlan(ctx context.Context, req resource.ModifyPlanRequest, resp *resource.ModifyPlanResponse) {
