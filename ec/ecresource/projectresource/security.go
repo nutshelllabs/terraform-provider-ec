@@ -180,7 +180,7 @@ func (sec securityApi) Patch(ctx context.Context, model resource_security_projec
 	if diags.HasError() {
 		return diags
 	}
-	updateBody.TrafficFilters = (*serverless.OptionalTrafficFilters)(trafficFilters)
+	updateBody.TrafficFilters = trafficFilters
 
 	resp, err := sec.client.PatchSecurityProjectWithResponse(ctx, model.Id.ValueString(), nil, updateBody)
 	if err != nil {
