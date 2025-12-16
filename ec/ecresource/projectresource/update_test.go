@@ -81,20 +81,28 @@ func TestUpdate(t *testing.T) {
 					Plan: tfsdk.Plan{
 						Raw: tftypes.NewValue(tftypes.Bool, true),
 					},
+					State: tfsdk.State{
+						Raw: tftypes.NewValue(tftypes.Bool, true),
+					},
 				}
 
 				model := resource_elasticsearch_project.ElasticsearchProjectModel{
 					Id: basetypes.NewStringValue("project id"),
 				}
 
+				stateModel := resource_elasticsearch_project.ElasticsearchProjectModel{
+					Id: basetypes.NewStringValue("project id"),
+				}
+
 				modelHandler := NewMockmodelHandler[resource_elasticsearch_project.ElasticsearchProjectModel](ctrl)
 				modelHandler.EXPECT().ReadFrom(ctx, req.Plan).Return(&model, nil)
+				modelHandler.EXPECT().ReadFrom(ctx, req.State).Return(&stateModel, nil)
 				modelHandler.EXPECT().GetID(model).Return(model.Id.ValueString())
 
 				api := NewMockapi[resource_elasticsearch_project.ElasticsearchProjectModel](ctrl)
 				api.EXPECT().Ready().Return(true)
 				api.EXPECT().Patch(ctx, model).Return(nil)
-				api.EXPECT().Read(ctx, model.Id.ValueString(), model).Return(false, model, nil)
+				api.EXPECT().Read(ctx, model.Id.ValueString(), stateModel).Return(false, model, nil)
 
 				return testData{
 					modelHandler: modelHandler,
@@ -116,23 +124,33 @@ func TestUpdate(t *testing.T) {
 					Plan: tfsdk.Plan{
 						Raw: tftypes.NewValue(tftypes.Bool, true),
 					},
+					State: tfsdk.State{
+						Raw: tftypes.NewValue(tftypes.Bool, true),
+					},
 				}
 
 				model := resource_elasticsearch_project.ElasticsearchProjectModel{
 					Id:             basetypes.NewStringValue("project id"),
 					TrafficFilters: types.SetNull(types.StringType),
 				}
+
+				stateModel := resource_elasticsearch_project.ElasticsearchProjectModel{
+					Id:             basetypes.NewStringValue("project id"),
+					TrafficFilters: types.SetNull(types.StringType),
+				}
+
 				readModel := model
 				readModel.Id = basetypes.NewStringValue("updated project id")
 
 				modelHandler := NewMockmodelHandler[resource_elasticsearch_project.ElasticsearchProjectModel](ctrl)
 				modelHandler.EXPECT().ReadFrom(ctx, req.Plan).Return(&model, nil)
+				modelHandler.EXPECT().ReadFrom(ctx, req.State).Return(&stateModel, nil)
 				modelHandler.EXPECT().GetID(model).Return(model.Id.ValueString())
 
 				api := NewMockapi[resource_elasticsearch_project.ElasticsearchProjectModel](ctrl)
 				api.EXPECT().Ready().Return(true)
 				api.EXPECT().Patch(ctx, model).Return(nil)
-				api.EXPECT().Read(ctx, model.Id.ValueString(), model).Return(true, readModel, nil)
+				api.EXPECT().Read(ctx, model.Id.ValueString(), stateModel).Return(true, readModel, nil)
 
 				return testData{
 					modelHandler: modelHandler,

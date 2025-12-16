@@ -35,8 +35,14 @@ func (r *Resource[T]) Update(ctx context.Context, request resource.UpdateRequest
 		return
 	}
 
+	stateModel, diags := r.modelHandler.ReadFrom(ctx, request.State)
+	response.Diagnostics.Append(diags...)
+	if response.Diagnostics.HasError() {
+		return
+	}
+
 	response.Diagnostics.Append(r.api.Patch(ctx, *model)...)
-	found, readModel, diags := r.api.Read(ctx, r.modelHandler.GetID(*model), *model)
+	found, readModel, diags := r.api.Read(ctx, r.modelHandler.GetID(*model), *stateModel)
 	response.Diagnostics.Append(diags...)
 
 	if !found {
