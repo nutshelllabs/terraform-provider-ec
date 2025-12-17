@@ -168,7 +168,7 @@ func (obs observabilityApi) Patch(ctx context.Context, model resource_observabil
 	if diags.HasError() {
 		return diags
 	}
-	updateBody.TrafficFilters = (*serverless.OptionalTrafficFilters)(trafficFilters)
+	updateBody.TrafficFilters = trafficFilters
 
 	resp, err := obs.client.PatchObservabilityProjectWithResponse(ctx, model.Id.ValueString(), nil, updateBody)
 	if err != nil {

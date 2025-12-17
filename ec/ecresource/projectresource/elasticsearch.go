@@ -202,7 +202,7 @@ func (es elasticsearchApi) Patch(ctx context.Context, model resource_elasticsear
 	if diags.HasError() {
 		return diags
 	}
-	updateBody.TrafficFilters = (*serverless.OptionalTrafficFilters)(trafficFilters)
+	updateBody.TrafficFilters = trafficFilters
 
 	resp, err := es.client.PatchElasticsearchProjectWithResponse(ctx, model.Id.ValueString(), nil, updateBody)
 	if err != nil {

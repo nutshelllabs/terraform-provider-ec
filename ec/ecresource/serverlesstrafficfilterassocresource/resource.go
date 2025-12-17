@@ -307,12 +307,11 @@ func (r *Resource) getProjectTrafficFilters(ctx context.Context, projectID, proj
 // patchProjectTrafficFilters updates the traffic filters for a project
 func (r *Resource) patchProjectTrafficFilters(ctx context.Context, projectID, projectType string, filters []serverless.TrafficFilter) diag.Diagnostics {
 	var diags diag.Diagnostics
-	trafficFilters := serverless.OptionalTrafficFilters(filters)
 
 	switch projectType {
 	case "elasticsearch":
 		patchReq := serverless.PatchElasticsearchProjectRequest{
-			TrafficFilters: &trafficFilters,
+			TrafficFilters: &filters,
 		}
 		resp, err := r.client.PatchElasticsearchProjectWithResponse(ctx, projectID, nil, patchReq)
 		if err != nil {
@@ -329,7 +328,7 @@ func (r *Resource) patchProjectTrafficFilters(ctx context.Context, projectID, pr
 
 	case "observability":
 		patchReq := serverless.PatchObservabilityProjectRequest{
-			TrafficFilters: &trafficFilters,
+			TrafficFilters: &filters,
 		}
 		resp, err := r.client.PatchObservabilityProjectWithResponse(ctx, projectID, nil, patchReq)
 		if err != nil {
@@ -346,7 +345,7 @@ func (r *Resource) patchProjectTrafficFilters(ctx context.Context, projectID, pr
 
 	case "security":
 		patchReq := serverless.PatchSecurityProjectRequest{
-			TrafficFilters: &trafficFilters,
+			TrafficFilters: &filters,
 		}
 		resp, err := r.client.PatchSecurityProjectWithResponse(ctx, projectID, nil, patchReq)
 		if err != nil {
