@@ -109,16 +109,6 @@
             }
           },
           {
-            "name": "traffic_filters",
-            "set": {
-              "computed_optional_required": "optional",
-              "description": "Traffic filters to associate with this project. Traffic filters are IDs of traffic filter resources.",
-              "element_type": {
-                "string": {}
-              }
-            }
-          },
-          {
             "name": "search_lake",
             "single_nested": {
               "computed_optional_required": "computed_optional",
@@ -163,6 +153,16 @@
                 }
               ],
               "description": "Configuration for entire set of capabilities that make the data searchable in Elasticsearch."
+            }
+          },
+          {
+            "name": "traffic_filters",
+            "set": {
+              "computed_optional_required": "optional",
+              "description": "Traffic filters to associate with this project. Traffic filters are IDs of traffic filter resources.",
+              "element_type": {
+                "string": {}
+              }
             }
           },
           {
